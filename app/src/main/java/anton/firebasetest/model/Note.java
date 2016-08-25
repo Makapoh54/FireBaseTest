@@ -2,40 +2,40 @@ package anton.firebasetest.model;
 
 
 public class Note {
-    private String mTitle;
-    private String mContent;
-    private String mCreationTime;
+    public String title;
+    public String content;
+    public String creationTime;
 
     public Note() {
     }
 
     public Note(String title, String content, String creationTime) {
-        mTitle = title;
-        mContent = content;
-        mCreationTime = creationTime;
+        this.title = title;
+        this.content = content;
+        this.creationTime = creationTime;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public String getContent() {
-        return mContent;
+        return content;
     }
 
     public void setContent(String content) {
-        mContent = content;
+        this.content = content;
     }
 
     public String getCreationTime() {
-        return mCreationTime;
+        return creationTime;
     }
 
     public void setCreationTime(String creationTime) {
-        mCreationTime = creationTime;
+        this.creationTime = creationTime;
     }
 }
