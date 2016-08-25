@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -30,10 +30,6 @@ import butterknife.OnClick;
 
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    @BindView(R.id.et_email)
-    EditText mEmailEditText;
-    @BindView(R.id.et_password)
-    EditText mPasswordEditText;
     @BindView(R.id.bt_login)
     Button mLoginButton;
 
@@ -143,13 +139,14 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(LogInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            mLoginButton.setVisibility(View.VISIBLE);
                         } else {
-                            mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                            mEmailEditText.setText(mUser.getEmail());
+                            Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
-                        // ...
                     }
                 });
     }
+
 
 }
