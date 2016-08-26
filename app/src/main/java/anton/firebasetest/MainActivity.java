@@ -2,6 +2,8 @@ package anton.firebasetest;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.EditText;
 
@@ -13,7 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import anton.firebasetest.Utils.ISO8601DateTime;
 import anton.firebasetest.model.Note;
-import anton.firebasetest.model.UserProfile;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,14 +26,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.post_content_et)
     EditText mPostContent;
 
-    private DatabaseReference mDatabase;
 
-    @OnClick(R.id.create_profile_button)
-    public void createProfileOnClick() {
-        if (!TextUtils.isEmpty(mPostTitle.getText()) && !TextUtils.isEmpty(mPostContent.getText())) {
-            writeNewUser(mPostTitle.getText().toString(), mPostContent.getText().toString());
-        }
-    }
+    private DatabaseReference mDatabase;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
 
     @OnClick(R.id.create_new_post_button)
     public void createNewPostOnClick() {
@@ -50,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         attachDataChangedListener();
     }
 
-    private void writeNewUser(String name, String email) {
-        UserProfile user = new UserProfile(name, email);
-        mDatabase.child("users").child("anton").setValue(user);
+    private void setRecyclerView(){
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     private void createPost(String title, String content) {
