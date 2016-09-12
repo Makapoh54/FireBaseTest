@@ -7,32 +7,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 import anton.firebasetest.R;
-import anton.firebasetest.model.Note;
+import anton.firebasetest.database.FirebaseDb;
+import anton.firebasetest.model.Post;
 
-public class NoteCardViewAdapter extends RecyclerView.Adapter<NoteCardViewAdapter.ViewHolder>{
+public class NoteCardViewAdapter extends RecyclerView.Adapter<NoteCardViewAdapter.ViewHolder> {
 
-    private List<Note> mNoteList;
+    private LinkedHashMap<String, Post> mPostList;
     private Context mContext;
     private LayoutInflater mInflater;
+    private OnItemClickListener mItemClickListener;
 
-    public NoteCardViewAdapter(Context context, ArrayList<Note> noteList) {
-        mNoteList = noteList;
+    public NoteCardViewAdapter(Context context, LinkedHashMap<String, Post> postList) {
+        mPostList = postList;
         mInflater = LayoutInflater.from(context);
         mContext = context;
     }
 
-    public Note getItem(int position) {
-        return mNoteList.get(position);
+    public Post getItem(int position) {
+        return mPostList.get(position);
     }
 
-    public void setNewItems(List<Note> newList) {
-        mNoteList = newList;
+    public void setNewItems(LinkedHashMap<String, Post> newList) {
+        mPostList = newList;
         notifyDataSetChanged();
     }
 
@@ -45,27 +48,27 @@ public class NoteCardViewAdapter extends RecyclerView.Adapter<NoteCardViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Note note = mNoteList.get(position);
+        Post post = (new ArrayList<Post>(mPostList.values())).get(position);
 
-        holder.mTitle.setText(carer.getFullName());
-        holder.mContent.setText(Utils.getStringFromList(carer.getCareCategories()));
+        holder.mTitle.setText(post.getTitle());
+        holder.mContent.setText(post.getContent());
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.cancelRequest();
     }
 
     @Override
     public int getItemCount() {
-        return mCarerList.size();
+        return mPostList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private LinearLayout mPlaceHolder;
         private TextView mTitle;
         private TextView mContent;
-        private Button mEdit;
+        private Button mDelete;
         private Button mSetAlarm;
 
         public ViewHolder(View view) {
@@ -73,17 +76,30 @@ public class NoteCardViewAdapter extends RecyclerView.Adapter<NoteCardViewAdapte
 
             mTitle = (TextView) view.findViewById(R.id.note_title_tv);
             mContent = (TextView) view.findViewById(R.id.note_content_tv);
+            mPlaceHolder = (LinearLayout) view.findViewById(R.id.note_content);
+            mDelete = (Button) view.findViewById(R.id.button_edit_note);
+            mDelete.setOnClickListener(onClick -> {
+                FirebaseDb.deletePost((new ArrayList<String>(mPostList.keySet())).get(getPosition()));
+            });
+            mPlaceHolder.setOnClickListener(this);
         }
 
-        /**
-         * Cancels photo loading request
-         * Avoids wrong item photo displaying on scrolling
-         */
-        public void cancelRequest() {
-            PicassoUtils.cancelRequest(mIcon);
-            mIcon.setImageResource(R.drawable.user_photo);
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getPosition());
+            }
         }
+
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
     }
 
 }
-}
+

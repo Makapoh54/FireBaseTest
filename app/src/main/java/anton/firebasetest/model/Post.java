@@ -1,15 +1,15 @@
 package anton.firebasetest.model;
 
 
-public class Note {
+public class Post {
     public String title;
     public String content;
     public String creationTime;
 
-    public Note() {
+    public Post() {
     }
 
-    public Note(String title, String content, String creationTime) {
+    public Post(String title, String content, String creationTime) {
         this.title = title;
         this.content = content;
         this.creationTime = creationTime;

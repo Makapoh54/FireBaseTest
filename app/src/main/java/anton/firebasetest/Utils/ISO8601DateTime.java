@@ -1,4 +1,4 @@
-package anton.firebasetest.Utils;
+package anton.firebasetest.utils;
 
 import android.support.annotation.NonNull;
 
